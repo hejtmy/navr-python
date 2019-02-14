@@ -10,7 +10,7 @@ setup(name='navr',
       packages=['navr'],
       install_requires=[
             'pandas',
-            'numpy>=1.16',
+            'numpy>=1.16.0',
             'matplotlib',
       ],
       zip_safe=False)

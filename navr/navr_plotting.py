@@ -16,8 +16,9 @@ def plot_value_in_time(times, values):
 
 
 def plot_positions_heatmap(positions_x, positions_y, size=(64, 64)):
-    #TODO - need to normalise the outcome, it is far not that
-    heatmap, xedges, yedges = np.histogram2d(positions_x, positions_y, bins=size, density=True)
+    # TODO - need to normalise the outcome, it is far not that
+    heatmap, xedges, yedges = np.histogram2d(positions_x, positions_y,
+                                             bins=size, density=True)
     extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
     plt.clf()
     plt.title('Position heatmap')

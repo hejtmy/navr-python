@@ -19,38 +19,44 @@ class Navr:
     def positions_y(self):
         return np.asanyarray(self.data['position_y'])
 
-    def calculate_distances(self):
-        positions = self.data[['position_x', 'position_y']].values
-        distances = nprep.calculate_distances(positions)
-        self.data['distance'] = distances
-        return distances
+    @property
+    def timestamps(self):
+        return np.asanyarray(self.data['timestamp'])
 
-    def calculate_speed(self):
+    @property
+    def distances(self):
         if 'distance' not in self.data.columns:
-            self.calculate_distances()
-        if 'timestamp_diffs' not in self.data.columns:
-            self.calculate_time_diff()
-        distances = np.asanyarray(self.data['distance'])
-        timediffs = np.asanyarray(self.data['time_diff'])
-        speeds = distances / timediffs
-        self.data['speed'] = speeds
-        return speeds
+            positions = self.data[['position_x', 'position_y']].values
+            distances = nprep.calculate_distances(positions)
+            self.data['distance'] = distances
+        return np.asanyarray(self.data['distance'])
 
-    def calculate_time_diff(self):
-        timediffs = np.diff(np.asanyarray(self.data['timestamp']))
-        timediffs = np.concatenate([[np.Inf], timediffs])
-        self.data['time_diff'] = timediffs
-        return timediffs
+    @property
+    def time_diffs(self):
+        if 'timestamp_diffs' not in self.data.columns:
+            timediffs = np.diff(np.asanyarray(self.data['timestamp']))
+            timediffs = np.concatenate([[np.Inf], timediffs])
+            self.data['time_diff'] = timediffs
+        return np.asanyarray(self.data['time_diff'])
+
+    @property
+    def speeds(self):
+        if 'speed' not in self.data.columns:
+            speeds = self.distances / self.time_diffs
+            self.data['speed'] = speeds
+        return np.asanyarray(self.data['speed'])
 
     # PLOTTING -----------------
-
-    #
     def plot_path(self):
         nplot.plot_path(self.positions_x, self.positions_y)
 
     def plot_path_heatmap(self, size=(64, 64)):
-        heatmap = nplot.plot_positions_heatmap(self.positions_x, self.positions_y, size=size)
+        heatmap = nplot.plot_positions_heatmap(self.positions_x,
+                                               self.positions_y, size=size)
         return heatmap
+
+    def plot_speeed(self):
+        nplot.plot_value_in_time(self.timestamps, self.speeds)
 
 
 def check_data(pd_data):
