@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import navr.navr_preprocessing as prep
+
 
 class Navr:
     def __init__(self, pd_data):
@@ -10,10 +12,8 @@ class Navr:
             return None
 
     def calculate_distances(self):
-        positions = self.data[['position_x', 'position_y']]
-        positions = positions.values
-        positions_shifted = np.roll(positions, 1, 0)
-        distances = np.linalg.norm(positions-positions_shifted, axis=1)
+        positions = self.data[['position_x', 'position_y']].values
+        distances = prep.calculate_distances(positions)
         self.data['distance'] = distances
         return distances
 
