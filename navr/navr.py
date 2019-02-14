@@ -1,6 +1,6 @@
-import pandas as pd
 import numpy as np
-import navr.navr_preprocessing as prep
+import navr.navr_preprocessing as nprep
+import navr.navr_plotting as nplot
 
 
 class Navr:
@@ -11,9 +11,17 @@ class Navr:
             raise Exception('Columns not correct')
             return None
 
+    @property
+    def positions_x(self):
+        return np.asanyarray(self.data['position_x'])
+
+    @property
+    def positions_y(self):
+        return np.asanyarray(self.data['position_y'])
+
     def calculate_distances(self):
         positions = self.data[['position_x', 'position_y']].values
-        distances = prep.calculate_distances(positions)
+        distances = nprep.calculate_distances(positions)
         self.data['distance'] = distances
         return distances
 
@@ -33,6 +41,9 @@ class Navr:
         timediffs = np.concatenate([[np.Inf], timediffs])
         self.data['time_diff'] = timediffs
         return timediffs
+
+    def plot_path(self):
+        nplot.plot_path(self.positions_x, self.positions_y)
 
 
 def check_data(pd_data):
