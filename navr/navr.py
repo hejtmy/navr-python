@@ -1,5 +1,5 @@
 import pandas as pd
-
+import numpy as np
 
 class Navr:
     def __init__(self, pd_data):
@@ -8,6 +8,31 @@ class Navr:
         else:
             raise Exception('Columns not correct')
             return None
+
+    def calculate_distances(self):
+        positions = self.data[['position_x', 'position_y']]
+        positions = positions.values
+        positions_shifted = np.roll(positions, 1, 0)
+        distances = np.linalg.norm(positions-positions_shifted, axis=1)
+        self.data['distance'] = distances
+        return distances
+
+    def calculate_speed(self):
+        if 'distance' not in self.data.columns:
+            self.calculate_distances()
+        if 'timestamp_diffs' not in self.data.columns:
+            self.calculate_time_diff()
+        distances = np.asanyarray(self.data['distance'])
+        timediffs = np.asanyarray(self.data['time_diff'])
+        speeds = distances / timediffs
+        self.data['speed'] = speeds
+        return speeds
+
+    def calculate_time_diff(self):
+        timediffs = np.diff(np.asanyarray(self.data['timestamp']))
+        timediffs = np.concatenate([[np.Inf], timediffs])
+        self.data['time_diff'] = timediffs
+        return timediffs
 
 
 def check_data(pd_data):
