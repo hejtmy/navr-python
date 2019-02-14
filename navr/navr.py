@@ -42,8 +42,15 @@ class Navr:
         self.data['time_diff'] = timediffs
         return timediffs
 
+    # PLOTTING -----------------
+
+    #
     def plot_path(self):
         nplot.plot_path(self.positions_x, self.positions_y)
+
+    def plot_path_heatmap(self, size=(64, 64)):
+        heatmap = nplot.plot_positions_heatmap(self.positions_x, self.positions_y, size=size)
+        return heatmap
 
 
 def check_data(pd_data):
