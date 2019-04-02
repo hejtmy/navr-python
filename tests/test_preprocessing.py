@@ -6,5 +6,6 @@ def test_distance_calculations(navr_class):
 def test_time_calculations(navr_class):
     navr_class.calculate_time_diff()
 
+
 def test_speed_calculations(navr_class):
     navr_class.calculate_speed()
